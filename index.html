@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="七年级生物：植物细胞结构互动图鉴">
+  <title>植物细胞结构互动图鉴｜七年级生物</title>
+  <style>
+    :root { --ink:#17324d; --muted:#506273; --paper:#f7fbf5; --card:#fff; --green:#16754b; --green-soft:#daf3df; --yellow:#ffe59b; --line:#bed4c4; --focus:#d35a00; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; color:var(--ink); background:var(--paper); font:16px/1.65 system-ui,-apple-system,"Microsoft YaHei",sans-serif; }
+    button { font:inherit; }
+    .wrap { width:min(100% - 24px, 760px); margin-inline:auto; }
+    header { padding:28px 0 22px; background:linear-gradient(135deg,#e7f8df,#ccefd9); border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 6px; color:#0d5c39; font-weight:800; letter-spacing:.04em; }
+    h1 { margin:0; font-size:clamp(1.75rem,7vw,2.55rem); line-height:1.18; }
+    .lead { margin:12px 0 0; color:#27485a; }
+    .goal { display:inline-block; margin-top:12px; padding:7px 12px; border-radius:999px; background:#fff; color:#27533a; font-weight:700; }
+    main { padding:22px 0 42px; }
+    section { margin-top:22px; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:0 3px 12px rgb(23 50 77 / 6%); }
+    h2 { margin:0 0 10px; font-size:1.35rem; line-height:1.3; }
+    .hint { margin:0; color:var(--muted); }
+    .diagram { width:100%; height:auto; margin-top:12px; border-radius:14px; background:#f3fbef; }
+    .diagram text { fill:#183d3c; font-size:13px; font-weight:700; }
+    .diagram .line { stroke:#275c52; stroke-width:1.8; fill:none; }
+    .diagram .cell-wall { fill:#86bd75; stroke:#356b40; stroke-width:8; }
+    .diagram .membrane { fill:#e8f4c7; stroke:#7fa45e; stroke-width:5; }
+    .diagram .cytoplasm { fill:#f8e7a8; }
+    .diagram .vacuole { fill:#c7eafa; stroke:#519bb3; stroke-width:3; }
+    .diagram .nucleus { fill:#cf8bc4; stroke:#894878; stroke-width:3; }
+    .diagram .chloroplast { fill:#65aa50; stroke:#2b7036; stroke-width:2; }
+    .atlas-grid { display:grid; gap:12px; margin-top:16px; }
+    .atlas-card { width:100%; min-height:64px; padding:14px; text-align:left; color:var(--ink); background:#fff; border:2px solid var(--line); border-radius:14px; cursor:pointer; }
+    .atlas-card:hover { background:#f4fbf1; border-color:#5ba06c; }
+    .atlas-card[aria-pressed="true"] { background:var(--green-soft); border-color:var(--green); box-shadow:inset 4px 0 0 var(--green); }
+    .atlas-card:focus-visible, button:focus-visible { outline:4px solid var(--focus); outline-offset:3px; }
+    .atlas-name { display:block; font-size:1.1rem; font-weight:800; }
+    .atlas-en { display:block; color:#386073; font-size:.94rem; }
+    .detail { margin-top:16px; padding:16px; background:#f1f9ed; border-left:5px solid var(--green); border-radius:0 12px 12px 0; }
+    .detail h3 { margin:0 0 8px; font-size:1.22rem; }
+    .detail p { margin:7px 0; }
+    .detail strong { color:#134f35; }
+    .placeholder { padding:14px; color:var(--muted); background:#f5f7f6; border-radius:12px; }
+    #analogy .placeholder, #practice .placeholder { display:none; }
+    .comparison-wrap { overflow-x:auto; margin-top:14px; }
+    .comparison-table { width:100%; min-width:520px; border-collapse:collapse; }
+    .comparison-table th, .comparison-table td { padding:11px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    .comparison-table th { color:#0d5c39; background:#edf8eb; }
+    .analogy-note { margin:14px 0 0; padding:11px 12px; border-radius:10px; color:#3f4e55; background:#fff6d8; }
+    .question-count { margin:0 0 12px; color:var(--muted); font-weight:700; }
+    .practice-question { margin:0 0 14px; font-size:1.15rem; font-weight:800; }
+    .option-list { display:grid; gap:10px; }
+    .option-button, .next-button { width:100%; min-height:48px; padding:12px 14px; text-align:left; color:var(--ink); background:#fff; border:2px solid var(--line); border-radius:12px; cursor:pointer; }
+    .option-button:hover:not(:disabled) { background:#f4fbf1; border-color:#5ba06c; }
+    .option-button:disabled { cursor:default; opacity:1; }
+    .option-button.correct { color:#114d31; background:#ddf4e2; border-color:#237447; }
+    .option-button.incorrect { color:#7b231a; background:#ffebe6; border-color:#b94a3e; }
+    .practice-feedback { margin:14px 0; padding:12px; border-radius:12px; background:#eef7ec; }
+    .practice-feedback.wrong { background:#fff1ec; }
+    .next-button { margin-top:4px; text-align:center; color:#fff; background:var(--green); border-color:var(--green); font-weight:800; }
+    .next-button:hover { background:#105d3a; }
+    .quiz-form { display:grid; gap:18px; margin-top:16px; }
+    .quiz-question { padding:14px; background:#f8fcf6; border:1px solid var(--line); border-radius:14px; }
+    .quiz-question legend { padding:0 4px; font-weight:800; }
+    .radio-option { display:flex; align-items:center; gap:10px; min-height:48px; padding:9px 10px; margin-top:8px; background:#fff; border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+    .radio-option input { width:22px; height:22px; flex:0 0 auto; accent-color:var(--green); }
+    .submit-quiz { width:100%; min-height:52px; padding:12px 16px; color:#fff; background:var(--green); border:2px solid var(--green); border-radius:12px; cursor:pointer; font-weight:800; }
+    .submit-quiz:hover { background:#105d3a; }
+    .quiz-result { margin-top:18px; padding:16px; background:#edf8eb; border-left:5px solid var(--green); border-radius:0 12px 12px 0; }
+    .quiz-result h3 { margin:0 0 8px; }
+    .quiz-result p { margin:8px 0; }
+    .quiz-result ul { margin:8px 0 0; padding-left:22px; }
+    @media (min-width:600px) { .atlas-grid { grid-template-columns:repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="eyebrow">七年级生物 · 植物细胞结构</p>
+      <h1>走进植物细胞</h1>
+      <p class="lead">用显微镜认识过细胞后，我们来看看植物细胞里有哪些“成员”。</p>
+      <span class="goal">学习目标：说出 6 个结构的名称和主要作用</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="overview" aria-labelledby="overview-title">
+      <h2 id="overview-title">先看整体</h2>
+      <p class="hint">植物细胞像一间有围墙、有门、有储物空间的小房子。请观察图中的六个结构。</p>
+      <svg class="diagram" viewBox="0 0 620 410" role="img" aria-labelledby="diagram-title diagram-desc">
+        <title id="diagram-title">植物细胞结构示意图</title>
+        <desc id="diagram-desc">图中标出细胞壁、细胞膜、细胞质、细胞核、液泡和叶绿体。</desc>
+        <rect class="cell-wall" x="115" y="55" width="365" height="275" rx="38" />
+        <rect class="membrane" x="132" y="72" width="331" height="241" rx="29" />
+        <rect class="cytoplasm" x="145" y="84" width="305" height="217" rx="23" />
+        <path class="vacuole" d="M270 104h135q20 0 20 20v125q0 25-25 25H266q-18 0-18-18V130q0-26 22-26z" />
+        <circle class="nucleus" cx="205" cy="226" r="35" /><circle fill="#884378" cx="205" cy="226" r="10" />
+        <ellipse class="chloroplast" cx="185" cy="135" rx="27" ry="15" /><path stroke="#e0f5bd" stroke-width="3" d="M166 135h38" />
+        <ellipse class="chloroplast" cx="205" cy="280" rx="27" ry="15" /><path stroke="#e0f5bd" stroke-width="3" d="M186 280h38" />
+        <ellipse class="chloroplast" cx="432" cy="182" rx="15" ry="27" transform="rotate(30 432 182)" /><path stroke="#e0f5bd" stroke-width="3" d="M421 163l22 38" />
+        <path class="line" d="M115 80 45 46" /><text x="12" y="42">细胞壁</text><text x="12" y="59">cell wall</text>
+        <path class="line" d="M133 112 44 112" /><text x="8" y="104">细胞膜</text><text x="8" y="128">cell membrane</text>
+        <path class="line" d="M146 176 44 176" /><text x="7" y="168">细胞质</text><text x="7" y="192">cytoplasm</text>
+        <path class="line" d="M205 226 60 255" /><text x="8" y="250">细胞核</text><text x="8" y="274">nucleus</text>
+        <path class="line" d="M405 120 560 76" /><text x="500" y="55">液泡</text><text x="500" y="73">vacuole</text>
+        <path class="line" d="M434 182 564 192" /><text x="485" y="184">叶绿体</text><text x="485" y="207">chloroplast</text>
+      </svg>
+    </section>
+    <section id="atlas" aria-labelledby="atlas-title">
+      <h2 id="atlas-title">结构图鉴</h2>
+      <p class="hint">点击一张卡片，查看它的位置、作用和记忆方法。</p>
+      <div id="atlasCards" class="atlas-grid" aria-label="植物细胞结构卡片"></div>
+      <div id="structureDetail" class="detail" aria-live="polite" tabindex="-1"></div>
+    </section>
+    <section id="analogy" aria-labelledby="analogy-title">
+      <p class="hint">把植物细胞想成一所学校，能帮助我们记住每个结构的主要工作。</p>
+      <div class="comparison-wrap">
+        <table class="comparison-table">
+          <thead><tr><th>细胞结构</th><th>学校里的角色</th><th>共同点</th></tr></thead>
+          <tbody>
+            <tr><td>细胞壁<br><span lang="en">cell wall</span></td><td>学校围墙</td><td>保护并支撑整体。</td></tr>
+            <tr><td>细胞膜<br><span lang="en">cell membrane</span></td><td>学校大门</td><td>控制哪些物质可以进出。</td></tr>
+            <tr><td>细胞质<br><span lang="en">cytoplasm</span></td><td>教室</td><td>许多生命活动在这里进行。</td></tr>
+            <tr><td>细胞核<br><span lang="en">nucleus</span></td><td>校长办公室</td><td>像指挥中心一样控制活动。</td></tr>
+            <tr><td>液泡<br><span lang="en">vacuole</span></td><td>储物柜</td><td>储存水分、糖分等物质。</td></tr>
+            <tr><td>叶绿体<br><span lang="en">chloroplast</span></td><td>太阳能工厂</td><td>利用光能制造有机物。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="analogy-note"><strong>提醒：</strong>这些类比只用来帮助记忆；细胞结构和学校设施并不完全相同。</p>
+      <h2 id="analogy-title">生活化对比</h2>
+      <p class="placeholder">下一步将把六个结构与学校里的设施作对比，帮助你记忆。</p>
+    </section>
+    <section id="practice" aria-labelledby="practice-title">
+      <div id="practiceArea" aria-live="polite"></div>
+      <h2 id="practice-title">随堂练习</h2>
+      <p class="placeholder">下一步将提供逐题即时反馈练习。</p>
+    </section>
+    <section id="quiz" aria-labelledby="quiz-title">
+      <h2 id="quiz-title">自测总结</h2>
+      <p class="hint">完成五道题后提交。提交前可以随时修改答案。</p>
+      <div id="quizArea"></div>
+    </section>
+  </main>
+  <script>
+    const structures = [
+      { id: 'cell-wall', zh: '细胞壁', en: 'cell wall', position: '最外层，包在细胞膜外面。', function: '保护和支持细胞，让植物细胞有比较固定的形状。', memory: '细胞壁像坚固的围墙。', analogy: '学校围墙' },
+      { id: 'cell-membrane', zh: '细胞膜', en: 'cell membrane', position: '紧贴细胞壁的里面。', function: '控制物质进出细胞。', memory: '细胞膜像会把关的门。', analogy: '学校大门' },
+      { id: 'cytoplasm', zh: '细胞质', en: 'cytoplasm', position: '细胞膜以内、细胞核以外的胶状物质。', function: '许多生命活动在这里进行。', memory: '细胞质像忙碌的活动场地。', analogy: '教室' },
+      { id: 'nucleus', zh: '细胞核', en: 'nucleus', position: '通常在细胞质中，常被液泡挤到一侧。', function: '含有遗传物质，控制着细胞的生命活动。', memory: '细胞核像细胞的指挥中心。', analogy: '校长办公室' },
+      { id: 'vacuole', zh: '液泡', en: 'vacuole', position: '植物细胞中常有一个较大的液泡。', function: '储存水分、糖分和色素等物质。', memory: '液泡像细胞里的储物柜。', analogy: '储物柜' },
+      { id: 'chloroplast', zh: '叶绿体', en: 'chloroplast', position: '在绿色植物细胞的细胞质中。', function: '利用光能制造有机物，是光合作用的场所。', memory: '叶绿体像太阳能小工厂。', analogy: '太阳能工厂' }
+    ];
+
+    const practiceQuestions = [
+      { question: '哪一结构位于植物细胞最外层，能保护和支持细胞？', options: ['细胞膜', '细胞壁', '液泡', '细胞核'], answer: 1, explanation: '细胞壁位于最外层，像围墙一样保护并支撑植物细胞。', reviewId: 'cell-wall' },
+      { question: '控制物质进出细胞的“关卡”是哪一结构？', options: ['细胞膜', '细胞质', '叶绿体', '液泡'], answer: 0, explanation: '细胞膜能控制物质进出，好比学校的大门。', reviewId: 'cell-membrane' },
+      { question: '许多生命活动在细胞的哪个部分进行？', options: ['细胞壁', '细胞质', '细胞核', '叶绿体'], answer: 1, explanation: '细胞质是胶状物质，许多生命活动在这里进行。', reviewId: 'cytoplasm' },
+      { question: '细胞的“指挥中心”是？', options: ['液泡', '细胞膜', '细胞核', '细胞壁'], answer: 2, explanation: '细胞核含有遗传物质，控制着细胞的生命活动。', reviewId: 'nucleus' },
+      { question: '植物细胞中常用来储存水分、糖分等物质的是？', options: ['叶绿体', '液泡', '细胞质', '细胞壁'], answer: 1, explanation: '液泡像储物柜，可以储存水分、糖分和色素等。', reviewId: 'vacuole' },
+      { question: '绿色植物细胞利用光能制造有机物的场所是？', options: ['细胞核', '细胞膜', '叶绿体', '液泡'], answer: 2, explanation: '叶绿体是进行光合作用的场所，像一座太阳能工厂。', reviewId: 'chloroplast' }
+    ];
+
+    const quizQuestions = [
+      { question: '小明观察洋葱表皮细胞，发现最外层有一层较坚硬的结构。它是？', options: ['细胞壁', '细胞膜', '液泡', '细胞核'], answer: 0, explanation: '细胞壁位于植物细胞最外层，能保护和支持细胞。', reviewId: 'cell-wall' },
+      { question: '把植物细胞比作学校，负责像“校门”一样控制物质进出的结构是？', options: ['细胞质', '细胞膜', '叶绿体', '细胞壁'], answer: 1, explanation: '细胞膜能控制物质进出细胞，就像学校大门。', reviewId: 'cell-membrane' },
+      { question: '植物细胞中，许多生命活动进行的主要场所是？', options: ['细胞质', '细胞核', '液泡', '细胞壁'], answer: 0, explanation: '细胞质是胶状物质，许多生命活动在这里进行。', reviewId: 'cytoplasm' },
+      { question: '含有遗传物质、控制细胞生命活动的结构是？', options: ['叶绿体', '液泡', '细胞核', '细胞膜'], answer: 2, explanation: '细胞核含有遗传物质，像细胞的指挥中心。', reviewId: 'nucleus' },
+      { question: '绿叶细胞中，利用光能制造有机物的结构是？', options: ['细胞壁', '细胞质', '液泡', '叶绿体'], answer: 3, explanation: '叶绿体是进行光合作用的场所，像一座太阳能小工厂。', reviewId: 'chloroplast' }
+    ];
+
+    const quizArea = document.getElementById('quizArea');
+    function renderQuiz() {
+      quizArea.innerHTML = `<form id="quizForm" class="quiz-form">${quizQuestions.map((item, questionIndex) => `<fieldset class="quiz-question"><legend>${questionIndex + 1}. ${item.question}</legend>${item.options.map((option, optionIndex) => `<label class="radio-option"><input type="radio" name="quiz-question-${questionIndex}" value="${optionIndex}"> <span>${String.fromCharCode(65 + optionIndex)}. ${option}</span></label>`).join('')}</fieldset>`).join('')}<button class="submit-quiz" type="submit">提交自测</button></form><div id="quizResult" aria-live="polite"></div>`;
+      document.getElementById('quizForm').addEventListener('submit', submitQuiz);
+    }
+    function submitQuiz(event) {
+      event.preventDefault();
+      let correctCount = 0;
+      const missed = [];
+      quizQuestions.forEach((item, questionIndex) => {
+        const selected = document.querySelector(`input[name="quiz-question-${questionIndex}"]:checked`);
+        const selectedIndex = selected ? Number(selected.value) : null;
+        if (selectedIndex === item.answer) correctCount += 1;
+        else missed.push({ item, selectedIndex });
+      });
+      const score = correctCount * 20;
+      const message = score === 100 ? '太棒了！五道题全部答对，你已经很好地掌握了植物细胞结构。' : score >= 60 ? '做得不错！看看下面的解析，再复习相关结构会更扎实。' : '别着急，学习就是一次次发现和改进。读完解析后，再回到图鉴复习吧！';
+      const reviewIds = [...new Set(missed.map(entry => entry.item.reviewId))];
+      const reviewStructures = reviewIds.map(id => structures.find(structure => structure.id === id)).filter(Boolean);
+      const result = document.getElementById('quizResult');
+      result.innerHTML = `<div class="quiz-result"><h3>你的得分：${score} / 100</h3><p>${message}</p>${missed.length ? `<p><strong>需要看看这些题的解析：</strong></p><ul>${missed.map(({ item, selectedIndex }) => `<li><strong>${item.question}</strong><br>${selectedIndex === null ? '你还没有选择答案。' : `你的选择：${item.options[selectedIndex]}。`} ${item.explanation}</li>`).join('')}</ul><p><strong>建议复习：</strong>${reviewStructures.map(item => `${item.zh} (${item.en})`).join('、')}</p>` : '<p>继续保持这份细心，也可以点击上面的图鉴再巩固一次。</p>'}</div>`;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    let practiceIndex = 0;
+    let practiceAnswered = false;
+    const practiceArea = document.getElementById('practiceArea');
+    function renderPractice() {
+      if (practiceIndex >= practiceQuestions.length) {
+        practiceArea.innerHTML = '<p class="practice-feedback"><strong>练习完成！</strong>你已完成 6 道随堂练习，接下来可以进行自测。</p>';
+        return;
+      }
+      practiceAnswered = false;
+      const item = practiceQuestions[practiceIndex];
+      practiceArea.innerHTML = `<p class="question-count">第 ${practiceIndex + 1} / ${practiceQuestions.length} 题</p><p class="practice-question">${item.question}</p><div class="option-list">${item.options.map((option, index) => `<button class="option-button" type="button" data-option="${index}">${String.fromCharCode(65 + index)}. ${option}</button>`).join('')}</div><div id="practiceFeedback"></div>`;
+      practiceArea.querySelectorAll('.option-button').forEach(button => button.addEventListener('click', () => answerPractice(Number(button.dataset.option))));
+    }
+    function answerPractice(index) {
+      if (practiceAnswered) return;
+      practiceAnswered = true;
+      const item = practiceQuestions[practiceIndex];
+      const correct = index === item.answer;
+      practiceArea.querySelectorAll('.option-button').forEach(button => {
+        const choice = Number(button.dataset.option);
+        button.disabled = true;
+        if (choice === item.answer) button.classList.add('correct');
+        else if (choice === index) button.classList.add('incorrect');
+      });
+      const feedback = document.getElementById('practiceFeedback');
+      feedback.innerHTML = `<p class="practice-feedback ${correct ? '' : 'wrong'}"><strong>${correct ? '回答正确！' : '这题暂时答错了。'}</strong> ${item.explanation}</p><button class="next-button" type="button">${practiceIndex === practiceQuestions.length - 1 ? '完成练习' : '下一题'}</button>`;
+      feedback.querySelector('.next-button').addEventListener('click', () => { practiceIndex += 1; renderPractice(); });
+    }
+
+    const cards = document.getElementById('atlasCards');
+    const detail = document.getElementById('structureDetail');
+    function showStructure(id, moveFocus = false) {
+      const item = structures.find(structure => structure.id === id);
+      document.querySelectorAll('.atlas-card').forEach(card => card.setAttribute('aria-pressed', String(card.dataset.id === id)));
+      detail.innerHTML = `<h3>${item.zh} <span lang="en">(${item.en})</span></h3><p><strong>位置：</strong>${item.position}</p><p><strong>主要作用：</strong>${item.function}</p><p><strong>记忆：</strong>${item.memory}</p>`;
+      if (moveFocus) detail.focus();
+    }
+    structures.forEach((item, index) => {
+      const card = document.createElement('button');
+      card.type = 'button'; card.className = 'atlas-card'; card.dataset.id = item.id;
+      card.setAttribute('aria-pressed', 'false');
+      card.innerHTML = `<span class="atlas-name">${index + 1}. ${item.zh}</span><span class="atlas-en" lang="en">${item.en}</span>`;
+      card.addEventListener('click', () => showStructure(item.id, false));
+      cards.appendChild(card);
+    });
+    showStructure(structures[0].id);
+    renderPractice();
+    renderQuiz();
+  </script>
+</body>
+</html>
